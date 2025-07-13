@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OG Image Generator - Create Beautiful Social Media Images</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .input-focus {
+            transition: all 0.2s ease;
+        }
+        .input-focus:focus {
+            border-color: #374151;
+            box-shadow: 0 0 0 3px rgba(55, 65, 81, 0.1);
+        }
+        .btn-hover {
+            transition: all 0.2s ease;
+        }
+        .btn-hover:hover {
+            transform: translateY(-1px);
+        }
+        .template-card {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .template-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        .template-card.active {
+            border-color: #374151;
+            box-shadow: 0 0 0 2px rgba(55, 65, 81, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 font-poppins min-h-screen">
+    <!-- Header -->
+    <header class="bg-gray-900 border-b border-gray-700 py-4">
+        <div class="container mx-auto px-4">
+            <h1 class="text-2xl font-bold text-center text-white">OG Image Generator</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Template Selection -->
+        <section class="mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-gray-800">Choose Template</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div class="template-card active border-2 border-gray-200 rounded-lg p-3 bg-white" data-template="basic">
+                    <div class="w-full h-16 bg-gray-900 rounded mb-2 flex items-center justify-center">
+                        <span class="text-white font-medium text-sm">Basic</span>
+                    </div>
+                    <p class="text-xs text-center text-gray-600">Clean Layout</p>
+                </div>
+                <div class="template-card border-2 border-gray-200 rounded-lg p-3 bg-white" data-template="hero">
+                    <div class="w-full h-16 bg-gray-700 rounded mb-2 flex items-center justify-center">
+                        <span class="text-white font-medium text-sm">Hero</span>
+                    </div>
+                    <p class="text-xs text-center text-gray-600">Centered</p>
+                </div>
+                <div class="template-card border-2 border-gray-200 rounded-lg p-3 bg-white" data-template="minimal">
+                    <div class="w-full h-16 bg-gray-500 rounded mb-2 flex items-center justify-center">
+                        <span class="text-white font-medium text-sm">Minimal</span>
+                    </div>
+                    <p class="text-xs text-center text-gray-600">Simple</p>
+                </div>
+                <div class="template-card border-2 border-gray-200 rounded-lg p-3 bg-white" data-template="brand">
+                    <div class="w-full h-16 bg-gray-800 rounded mb-2 flex items-center justify-center">
+                        <span class="text-white font-medium text-sm">Brand</span>
+                    </div>
+                    <p class="text-xs text-center text-gray-600">Logo Focus</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Controls -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <h2 class="text-lg font-semibold mb-6 text-gray-800">Customize</h2>
+                    
+                    <!-- Title -->
+                    <div class="mb-5">
+                        <label for="title" class="block text-sm font-medium mb-2 text-gray-700">Title</label>
+                        <input type="text" id="title" maxlength="70" 
+                               class="input-focus w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none bg-white text-gray-900"
+                               placeholder="Enter your title">
+                        <div class="text-xs text-gray-500 mt-1">
+                            <span id="titleCount">0</span>/70 characters
+                        </div>
+                    </div>
+
+                    <!-- Subtitle -->
+                    <div class="mb-5">
+                        <label for="subtitle" class="block text-sm font-medium mb-2 text-gray-700">Subtitle</label>
+                        <textarea id="subtitle" maxlength="150" rows="3"
+                                  class="input-focus w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none resize-none bg-white text-gray-900"
+                                  placeholder="Enter subtitle"></textarea>
+                        <div class="text-xs text-gray-500 mt-1">
+                            <span id="subtitleCount">0</span>/150 characters
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-5">
+                        <label for="description" class="block text-sm font-medium mb-2 text-gray-700">Description</label>
+                        <textarea id="description" rows="2"
+                                  class="input-focus w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none resize-none bg-white text-gray-900"
+                                  placeholder="Meta description"></textarea>
+                    </div>
+
+                    <!-- Logo Upload -->
+                    <div class="mb-5">
+                        <label for="logo" class="block text-sm font-medium mb-2 text-gray-700">Logo</label>
+                        <div class="relative">
+                            <input type="file" id="logo" accept="image/*" class="hidden">
+                            <button id="logoButton" class="w-full px-3 py-2 border-2 border-dashed border-gray-300 rounded-md hover:border-gray-400 transition-colors bg-white">
+                                <div class="text-center">
+                                    <svg class="mx-auto h-6 w-6 text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                    </svg>
+                                    <span class="text-sm text-gray-600">Upload image</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Colors -->
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium mb-2 text-gray-700">Colors</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-1">Background</label>
+                                <input type="color" id="bgColor" value="#ffffff" class="w-full h-8 rounded border border-gray-300 cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-1">Text</label>
+                                <input type="color" id="textColor" value="#000000" class="w-full h-8 rounded border border-gray-300 cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Typography -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2 text-gray-700">Typography</label>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-1">Title Size: <span id="titleSizeValue">72px</span></label>
+                                <input type="range" id="titleSize" min="40" max="100" value="72" class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-1">Subtitle Size: <span id="subtitleSizeValue">36px</span></label>
+                                <input type="range" id="subtitleSize" min="20" max="60" value="36" class="w-full">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="space-y-2">
+                        <button id="downloadPNG" class="btn-hover w-full bg-gray-900 text-white py-2 rounded-md font-medium">
+                            Download PNG
+                        </button>
+                        <button id="downloadJPG" class="btn-hover w-full border border-gray-900 text-gray-900 py-2 rounded-md font-medium hover:bg-gray-50">
+                            Download JPG
+                        </button>
+                        <button id="copyMetaTags" class="btn-hover w-full border border-gray-300 text-gray-700 py-2 rounded-md font-medium hover:bg-gray-50">
+                            Copy Meta Tags
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Canvas -->
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold text-gray-800">Preview</h2>
+                        <span class="text-sm text-gray-600 bg-white px-2 py-1 rounded border">1200×630px</span>
+                    </div>
+                    <div class="bg-white rounded-lg border border-gray-200 p-4">
+                        <canvas id="ogCanvas" width="1200" height="630" class="w-full h-auto rounded"></canvas>
+                    </div>
+                </div>
+
+                <!-- Meta Tags -->
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Meta Tags</h3>
+                        <button id="copyMetaTagsAlt" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                            Copy
+                        </button>
+                    </div>
+                    <div class="bg-black rounded-lg p-4 overflow-x-auto">
+                        <pre id="metaTagsPreview" class="text-sm text-green-400 whitespace-pre-wrap font-mono">
+&lt;meta property="og:title" content="Your Title" /&gt;
+&lt;meta property="og:description" content="Your Description" /&gt;
+&lt;meta property="og:image" content="[Image URL]" /&gt;
+&lt;meta property="og:image:width" content="1200" /&gt;
+&lt;meta property="og:image:height" content="630" /&gt;
+&lt;meta property="og:type" content="website" /&gt;
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200 py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-4">
+                <a href="https://ko-fi.com/azmaldev" target="_blank" rel="noopener noreferrer" 
+                   class="inline-block bg-gray-900 text-white px-6 py-3 rounded-md font-medium hover:bg-gray-800 transition-colors">
+                    Support on Ko-fi
+                </a>
+            </div>
+            <p class="text-gray-600 text-sm">made by @azmal</p>
+        </div>
+    </footer>
+
+<script>
+// DOM Elements
+const titleInput = document.getElementById('title');
+const subtitleInput = document.getElementById('subtitle');
+const descriptionInput = document.getElementById('description');
+const logoInput = document.getElementById('logo');
+const logoButton = document.getElementById('logoButton');
+const canvas = document.getElementById('ogCanvas');
+const ctx = canvas.getContext('2d');
+const downloadPNGBtn = document.getElementById('downloadPNG');
+const downloadJPGBtn = document.getElementById('downloadJPG');
+const copyMetaTagsBtn = document.getElementById('copyMetaTags');
+const copyMetaTagsAltBtn = document.getElementById('copyMetaTagsAlt');
+const metaTagsPreview = document.getElementById('metaTagsPreview');
+const titleCount = document.getElementById('titleCount');
+const subtitleCount = document.getElementById('subtitleCount');
+const bgColorInput = document.getElementById('bgColor');
+const textColorInput = document.getElementById('textColor');
+const titleSizeInput = document.getElementById('titleSize');
+const subtitleSizeInput = document.getElementById('subtitleSize');
+const titleSizeValue = document.getElementById('titleSizeValue');
+const subtitleSizeValue = document.getElementById('subtitleSizeValue');
+const templateCards = document.querySelectorAll('.template-card');
+
+// State
+let uploadedImage = null;
+let currentTemplate = 'basic';
+let currentBgColor = '#ffffff';
+let currentTextColor = '#000000';
+let currentTitleSize = 72;
+let currentSubtitleSize = 36;
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    drawOGImage();
+    updateMetaTags();
+    setupEventListeners();
+});
+
+function setupEventListeners() {
+    // Input listeners
+    titleInput.addEventListener('input', handleTitleInput);
+    subtitleInput.addEventListener('input', handleSubtitleInput);
+    descriptionInput.addEventListener('input', updateMetaTags);
+    logoButton.addEventListener('click', () => logoInput.click());
+    logoInput.addEventListener('change', handleImageUpload);
+    
+    // Color listeners
+    bgColorInput.addEventListener('change', handleBgColorChange);
+    textColorInput.addEventListener('change', handleTextColorChange);
+    
+    // Size listeners
+    titleSizeInput.addEventListener('input', handleTitleSizeChange);
+    subtitleSizeInput.addEventListener('input', handleSubtitleSizeChange);
+    
+    // Template listeners
+    templateCards.forEach(card => {
+        card.addEventListener('click', handleTemplateChange);
+    });
+    
+    // Action listeners
+    downloadPNGBtn.addEventListener('click', () => downloadImage('png'));
+    downloadJPGBtn.addEventListener('click', () => downloadImage('jpg'));
+    copyMetaTagsBtn.addEventListener('click', copyMetaTags);
+    copyMetaTagsAltBtn.addEventListener('click', copyMetaTags);
+}
+
+// Input handlers
+function handleTitleInput() {
+    const value = titleInput.value;
+    titleCount.textContent = value.length;
+    drawOGImage();
+    updateMetaTags();
+}
+
+function handleSubtitleInput() {
+    const value = subtitleInput.value;
+    subtitleCount.textContent = value.length;
+    drawOGImage();
+    updateMetaTags();
+}
+
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size must be less than 5MB');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                uploadedImage = img;
+                drawOGImage();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        uploadedImage = null;
+        drawOGImage();
+    }
+}
+
+function handleBgColorChange(event) {
+    currentBgColor = event.target.value;
+    drawOGImage();
+}
+
+function handleTextColorChange(event) {
+    currentTextColor = event.target.value;
+    drawOGImage();
+}
+
+function handleTitleSizeChange(event) {
+    currentTitleSize = parseInt(event.target.value);
+    titleSizeValue.textContent = currentTitleSize + 'px';
+    drawOGImage();
+}
+
+function handleSubtitleSizeChange(event) {
+    currentSubtitleSize = parseInt(event.target.value);
+    subtitleSizeValue.textContent = currentSubtitleSize + 'px';
+    drawOGImage();
+}
+
+function handleTemplateChange(event) {
+    templateCards.forEach(card => card.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    currentTemplate = event.currentTarget.dataset.template;
+    drawOGImage();
+}
+
+// Generate initials
+function getInitials(title) {
+    if (!title) return 'OG';
+    return title
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase())
+        .join('')
+        .substring(0, 2);
+}
+
+// Draw OG Image
+function drawOGImage() {
+    const title = titleInput.value || 'Your Title';
+    const subtitle = subtitleInput.value || 'Your subtitle goes here';
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Set background
+    ctx.fillStyle = currentBgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Template layouts
+    switch (currentTemplate) {
+        case 'basic':
+            drawBasicTemplate(title, subtitle);
+            break;
+        case 'hero':
+            drawHeroTemplate(title, subtitle);
+            break;
+        case 'minimal':
+            drawMinimalTemplate(title, subtitle);
+            break;
+        case 'brand':
+            drawBrandTemplate(title, subtitle);
+            break;
+        default:
+            drawBasicTemplate(title, subtitle);
+    }
+}
+
+function drawBasicTemplate(title, subtitle) {
+    const avatarSize = 120;
+    const avatarX = 80;
+    const avatarY = 80;
+    
+    // Draw avatar/logo
+    if (uploadedImage) {
+        drawImageCircle(avatarX, avatarY, avatarSize);
+    } else {
+        drawInitialsCircle(avatarX, avatarY, avatarSize, title);
+    }
+    
+    // Draw text
+    const titleX = avatarX + avatarSize + 40;
+    const titleY = avatarY;
+    drawTitleAndSubtitle(titleX, titleY, title, subtitle);
+    
+    // Draw border
+    ctx.strokeStyle = currentTextColor;
+    ctx.lineWidth = 4;
+    ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+}
+
+function drawHeroTemplate(title, subtitle) {
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    
+    // Draw title centered
+    ctx.font = `bold ${currentTitleSize + 20}px Poppins, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = currentTextColor;
+    
+    const titleLines = wrapText(ctx, title, canvas.width - 100);
+    const totalHeight = titleLines.length * (currentTitleSize + 20) + 40 + currentSubtitleSize;
+    let startY = centerY - totalHeight / 2;
+    
+    titleLines.forEach((line, index) => {
+        ctx.fillText(line, centerX, startY + (index * (currentTitleSize + 20)));
+    });
+    
+    // Draw subtitle
+    ctx.font = `${currentSubtitleSize}px Poppins, sans-serif`;
+    const subtitleY = startY + (titleLines.length * (currentTitleSize + 20)) + 40;
+    const subtitleLines = wrapText(ctx, subtitle, canvas.width - 100);
+    
+    subtitleLines.forEach((line, index) => {
+        ctx.fillText(line, centerX, subtitleY + (index * (currentSubtitleSize + 10)));
+    });
+    
+    // Logo in corner if available
+    if (uploadedImage) {
+        const logoSize = 80;
+        drawImageCircle(canvas.width - logoSize - 40, 40, logoSize);
+    }
+}
+
+function drawMinimalTemplate(title, subtitle) {
+    const startY = 150;
+    
+    ctx.font = `300 ${currentTitleSize}px Poppins, sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = currentTextColor;
+    
+    const titleLines = wrapText(ctx, title, canvas.width - 160);
+    titleLines.forEach((line, index) => {
+        ctx.fillText(line, 80, startY + (index * (currentTitleSize + 10)));
+    });
+    
+    // Line separator
+    ctx.strokeStyle = currentTextColor;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(80, startY + (titleLines.length * (currentTitleSize + 10)) + 30);
+    ctx.lineTo(300, startY + (titleLines.length * (currentTitleSize + 10)) + 30);
+    ctx.stroke();
+    
+    // Subtitle
+    ctx.font = `${currentSubtitleSize}px Poppins, sans-serif`;
+    const subtitleY = startY + (titleLines.length * (currentTitleSize + 10)) + 60;
+    const subtitleLines = wrapText(ctx, subtitle, canvas.width - 160);
+    
+    subtitleLines.forEach((line, index) => {
+        ctx.fillText(line, 80, subtitleY + (index * (currentSubtitleSize + 5)));
+    });
+}
+
+function drawBrandTemplate(title, subtitle) {
+    if (uploadedImage) {
+        const logoSize = 200;
+        const logoX = (canvas.width - logoSize) / 2;
+        const logoY = 80;
+        drawImageCircle(logoX, logoY, logoSize);
+        
+        // Title below logo
+        ctx.font = `bold ${currentTitleSize}px Poppins, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = currentTextColor;
+        
+        const titleY = logoY + logoSize + 40;
+        const titleLines = wrapText(ctx, title, canvas.width - 100);
+        titleLines.forEach((line, index) => {
+            ctx.fillText(line, canvas.width / 2, titleY + (index * (currentTitleSize + 10)));
+        });
+        
+        // Subtitle
+        ctx.font = `${currentSubtitleSize}px Poppins, sans-serif`;
+        const subtitleY = titleY + (titleLines.length * (currentTitleSize + 10)) + 20;
+        const subtitleLines = wrapText(ctx, subtitle, canvas.width - 100);
+        
+        subtitleLines.forEach((line, index) => {
+            ctx.fillText(line, canvas.width / 2, subtitleY + (index * (currentSubtitleSize + 5)));
+        });
+    } else {
+        drawBasicTemplate(title, subtitle);
+    }
+}
+
+function drawImageCircle(x, y, size) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(x + size/2, y + size/2, size/2, 0, Math.PI * 2);
+    ctx.clip();
+    
+    const imgAspect = uploadedImage.width / uploadedImage.height;
+    let drawWidth = size;
+    let drawHeight = size;
+    let drawX = x;
+    let drawY = y;
+    
+    if (imgAspect > 1) {
+        drawHeight = size / imgAspect;
+        drawY = y + (size - drawHeight) / 2;
+    } else {
+        drawWidth = size * imgAspect;
+        drawX = x + (size - drawWidth) / 2;
+    }
+    
+    ctx.drawImage(uploadedImage, drawX, drawY, drawWidth, drawHeight);
+    ctx.restore();
+}
+
+function drawInitialsCircle(x, y, size, title) {
+    ctx.beginPath();
+    ctx.arc(x + size/2, y + size/2, size/2, 0, Math.PI * 2);
+    ctx.strokeStyle = currentTextColor;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    
+    ctx.font = `bold ${size/3}px Poppins, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = currentTextColor;
+    ctx.fillText(getInitials(title), x + size/2, y + size/2);
+}
+
+function drawTitleAndSubtitle(x, y, title, subtitle) {
+    ctx.font = `bold ${currentTitleSize}px Poppins, sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = currentTextColor;
+    
+    const maxTitleWidth = canvas.width - x - 80;
+    const titleLines = wrapText(ctx, title, maxTitleWidth);
+    titleLines.forEach((line, index) => {
+        ctx.fillText(line, x, y + (index * (currentTitleSize + 10)));
+    });
+    
+    ctx.font = `${currentSubtitleSize}px Poppins, sans-serif`;
+    const subtitleY = y + (titleLines.length * (currentTitleSize + 10)) + 30;
+    const maxSubtitleWidth = canvas.width - x - 80;
+    
+    const subtitleLines = wrapText(ctx, subtitle, maxSubtitleWidth);
+    subtitleLines.forEach((line, index) => {
+        ctx.fillText(line, x, subtitleY + (index * (currentSubtitleSize + 5)));
+    });
+}
+
+// Word wrap function
+function wrapText(context, text, maxWidth) {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = words[0] || '';
+    
+    for (let i = 1; i < words.length; i++) {
+        const word = words[i];
+        const width = context.measureText(currentLine + ' ' + word).width;
+        if (width < maxWidth) {
+            currentLine += ' ' + word;
+        } else {
+            lines.push(currentLine);
+            currentLine = word;
+        }
+    }
+    lines.push(currentLine);
+    return lines;
+}
+
+// Download image
+function downloadImage(format) {
+    const link = document.createElement('a');
+    const title = titleInput.value || 'og-image';
+    const filename = `${title.toLowerCase().replace(/[^a-z0-9]/g, '-')}.${format}`;
+    
+    if (format === 'png') {
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png');
+    } else {
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        
+        tempCtx.fillStyle = '#ffffff';
+        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+        tempCtx.drawImage(canvas, 0, 0);
+        
+        link.download = filename;
+        link.href = tempCanvas.toDataURL('image/jpeg', 0.9);
+    }
+    
+    link.click();
+}
+
+// Update meta tags
+function updateMetaTags() {
+    const title = titleInput.value || 'Your Title';
+    const description = descriptionInput.value || 'Your Description';
+    
+    const metaTags = `<meta property="og:title" content="${escapeHtml(title)}" />
+<meta property="og:description" content="${escapeHtml(description)}" />
+<meta property="og:image" content="[Image URL]" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="${escapeHtml(title)}" />
+<meta name="twitter:description" content="${escapeHtml(description)}" />
+<meta name="twitter:image" content="[Image URL]" />`;
+    
+    metaTagsPreview.textContent = metaTags;
+}
+
+// Copy meta tags
+async function copyMetaTags() {
+    try {
+        await navigator.clipboard.writeText(metaTagsPreview.textContent);
+        
+        const originalText = copyMetaTagsBtn.textContent;
+        copyMetaTagsBtn.textContent = 'Copied!';
+        copyMetaTagsBtn.classList.add('bg-green-600', 'text-white');
+        
+        setTimeout(() => {
+            copyMetaTagsBtn.textContent = originalText;
+            copyMetaTagsBtn.classList.remove('bg-green-600', 'text-white');
+        }, 2000);
+    } catch (err) {
+        console.error('Failed to copy: ', err);
+        const textArea = document.createElement('textarea');
+        textArea.value = metaTagsPreview.textContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        const originalText = copyMetaTagsBtn.textContent;
+        copyMetaTagsBtn.textContent = 'Copied!';
+        setTimeout(() => {
+            copyMetaTagsBtn.textContent = originalText;
+        }, 2000);
+    }
+}
+
+// Utility function
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+</script>
+</body>
+</html>
